@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/shivam-jainn/goldfiber/internal/handler"
+	"github.com/shivam-jainn/goldfiber/internal/logger"
 )
 
 type App struct {
@@ -12,9 +13,7 @@ type App struct {
 func New() *App {
 	app := fiber.New()
 
-	// // versioning
-	// api := app.Group("/api")
-	// v1 := api.Group("/v1")
+	app.Use(logger.FiberMiddleware())
 
 	// routes
 	handler.RegisterHealthRoutes(app)

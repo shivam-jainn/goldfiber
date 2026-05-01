@@ -1,0 +1,9 @@
+# Health Check API Endpoint
+@name = Health Check
+@baseURL = http://localhost:8080
+
+### Health Check
+GET {{baseURL}}/health
+
+### Detailed Health Check
+GET {{baseURL}}/health/details

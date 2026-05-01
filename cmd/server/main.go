@@ -2,10 +2,16 @@ package main
 
 import (
 	"github.com/shivam-jainn/goldfiber/internal/app"
+	"github.com/shivam-jainn/goldfiber/internal/config"
 )
 
 func main() {
 	app := app.New()
+	cfg, err := config.LoadConfig()
 
-	app.Fiber.Listen(":8080")
+	if err != nil {
+		panic(err)
+	}
+
+	app.Fiber.Listen(":" + cfg.Port)
 }

@@ -19,15 +19,25 @@ help:
 	@echo "  $(YELLOW)██║  ███╗██║   ██║██║     ██║  ██║$(RESET)█████╗  ██║██████╔╝█████╗  ██████╔╝"
 	@echo "  $(YELLOW)██║   ██║██║   ██║██║     ██║  ██║$(RESET)██╔══╝  ██║██╔══██╗██╔══╝  ██╔══██╗"
 	@echo "  $(YELLOW)╚██████╔╝╚██████╔╝███████╗██████╔╝$(RESET)██║     ██║██████╔╝███████╗██║  ██║"
-	@echo "   $(YELLOW)╚═════╝ ╚═════╝ ╚══════╝╚═════╝ $(RESET) ╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
+	@echo "   $(YELLOW)╚═════╝ ╚═════╝ ╚══════╝╚═════╝ $(RESET) ╚═╝     ╚═╝╚═════╝╚══════╝╚═╝  ╚═╝"
 	@echo ""
 	@echo "$(YELLOW)Available Commands:$(RESET)"
-	@echo "  $(GREEN)make dev    Run development server with Air (hot reload)"
+	@echo "  $(GREEN)make dev       Run development server with Air (hot reload)"
+	@echo "  $(GREEN)make test      Run unit tests"
+	@echo "  $(GREEN)make lint      Run Go linters"
 	@echo ""
 
-dev:
+ dev:
 	@echo "$(GREEN)Starting GoldFiber dev server with Air...$(RESET)"
 	@air
+
+lint:
+	@echo "$(GREEN)Running linters...$(RESET)"
+	@golangci-lint run ./...
+
+ test:
+	@echo "$(GREEN)Running tests...$(RESET)"
+	@go test ./...
 
 dev-infra:
 	@echo "$(GREEN)Starting GoldFiber development infrastructure with Docker Compose...$(RESET)"

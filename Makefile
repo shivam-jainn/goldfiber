@@ -28,3 +28,20 @@ help:
 dev:
 	@echo "$(GREEN)Starting GoldFiber dev server with Air...$(RESET)"
 	@air
+
+dev-infra:
+	@echo "$(GREEN)Starting GoldFiber development infrastructure with Docker Compose...$(RESET)"
+	@docker compose -f infra/compose-dev.yml up -d
+
+dev-infra-down:
+	@echo "$(GREEN)Stopping GoldFiber development infrastructure...$(RESET)"
+	@docker compose -f infra/compose-dev.yml down
+
+dev-infra-reset:
+	@echo "$(GREEN)Resetting GoldFiber development infrastructure...$(RESET)"
+	@docker compose -f infra/compose-dev.yml down -v
+	@docker compose -f infra/compose-dev.yml up -d
+
+prod:
+	@echo "$(GREEN)Starting GoldFiber production infrastructure with Docker Compose...$(RESET)"
+	@docker compose -f infra/compose-prod.yml up -d

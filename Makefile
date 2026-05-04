@@ -61,6 +61,10 @@ dev-infra-reset: ## Reset development infrastructure (wipe volumes)
 	@docker compose -f infra/compose-dev.yml down -v
 	@docker compose -f infra/compose-dev.yml up -d
 
+dev-infra-observability: ## Start observability tools
+	@echo "$(GREEN)Starting dev infra with observability...$(RESET)"
+	@docker compose -f infra/compose-dev-observability.yml up -d
+
 # =========================
 # Infrastructure (Prod)
 # =========================

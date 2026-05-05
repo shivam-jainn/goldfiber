@@ -4,26 +4,28 @@ A starter template for a Go web service using Fiber, PostgreSQL, and Docker Comp
 
 ## Overview
 
-This repository demonstrates a clean layout for a Go + Fiber application with:
+GoldFiber demonstrates a clean layout for a Go + Fiber application with:
 
 - Fiber web server in `cmd/server/main.go`
 - environment-based configuration in `internal/config`
-- PostgreSQL connection via `pgxpool` in `internal/database`
+- PostgreSQL connection management via `pgxpool` in `internal/database`
 - request logging middleware in `internal/logger`
-- route registration in `internal/handler`
-- Docker Compose support for local development
+- route and handler registration in `internal/app` and `internal/handler`
+- Docker Compose support for local development and observability
+- SQL code generation and migration tooling in `db/` and `Makefile`
 
 ## Repo Structure
 
 - `cmd/server/main.go` — application bootstrap and graceful shutdown
-- `internal/app/app.go` — Fiber app setup and middleware registration
-- `internal/config` — env loading, defaults, and required field validation
-- `internal/database` — database pool creation and health check
+- `internal/app/app.go` — Fiber app setup, middleware, and route registration
+- `internal/config` — environment loading, defaults, and required validation
+- `internal/database` — database pool creation, ping health checks, and helpers
 - `internal/handler` — HTTP route handlers
-- `internal/logger` — logging interface and Fiber logging middleware
-- `infra/` — Compose files for development and production
-- `db/` — SQL schema and queries
-- `Makefile` — helper commands for development tasks
+- `internal/logger` — logger abstraction, context helpers, and middleware
+- `internal/repository` / `internal/service` — separation points for business logic
+- `infra/` — Docker Compose manifest and observability configs
+- `db/` — SQL schema, migrations, and generated query code
+- `Makefile` — common development and infrastructure commands
 
 ## Getting Started
 
@@ -32,11 +34,11 @@ This repository demonstrates a clean layout for a Go + Fiber application with:
 - Go 1.25+
 - PostgreSQL for local development
 - Docker & Docker Compose for infra-based workflows
-- `air` for hot reloading (optional, used by `make dev`)
+- `air` for hot reloading (optional when using `make dev`)
 
-### Run locally
+### Environment
 
-1. Copy or create `.env` with required variables:
+Create a `.env` file with the required values:
 
 ```env
 PORT=8080
@@ -46,13 +48,15 @@ LOG_LEVEL=info
 DB_URL=postgres://user:password@localhost:5432/goldfiber?sslmode=disable
 ```
 
-2. Start the app:
+### Run Locally
+
+Start the application directly:
 
 ```bash
 go run ./cmd/server
 ```
 
-3. Alternatively, use the Makefile dev command:
+Or run in development mode with hot reload:
 
 ```bash
 make dev
@@ -66,48 +70,56 @@ Start development infrastructure:
 make dev-infra
 ```
 
-Stop it:
+Stop development infrastructure:
 
 ```bash
 make dev-infra-down
 ```
 
-Reset infra:
+Reset development infrastructure and recreate containers:
 
 ```bash
 make dev-infra-reset
 ```
 
+Start development infrastructure with observability tooling:
+
+```bash
+make dev-infra-observability
+```
+
+## Useful Make Targets
+
+- `make dev` — start the app with `air`
+- `make lint` — run Go linters via `golangci-lint`
+- `make test` — run Go unit tests
+- `make dev-infra` — start local Docker Compose environment
+- `make dev-infra-down` — stop local Docker Compose environment
+- `make dev-infra-reset` — stop and recreate local Docker Compose environment
+- `make dev-infra-observability` — start infra with observability services
+- `make sqlc` — generate Go code from SQL queries with `sqlc`
+- `make migrate` — run database migrations via `goose`
+
 ## Environment Variables
 
-The application reads configuration from environment variables via `internal/config`.
+The application reads configuration from environment variables in `internal/config`.
 
-- `PORT` — HTTP server port (default `8080`)
-- `DEBUG` — debug mode flag (default `false`)
-- `ENV` — environment name (default `dev`)
-- `LOG_LEVEL` — log verbosity (default `info`)
+- `PORT` — HTTP server port (default: `8080`)
+- `DEBUG` — enable debug mode (default: `false`)
+- `ENV` — runtime environment name (default: `dev`)
+- `LOG_LEVEL` — log verbosity (default: `info`)
 - `DB_URL` — PostgreSQL connection URL (required)
 
-## Health Checks
+## API / Health Checks
 
-- `GET /health` — simple health check
-- `GET /health/details` — JSON health response
+- `GET /health` — basic health check
+- `GET /health/details` — detailed JSON health response
 
 ## Development Notes
 
-- Use `internal/app` to register routes and middleware.
-- Keep business logic in `internal/service` or `internal/repository` as the app grows.
-- The current logger abstraction supports swapping logger implementations.
-
-## Extend the Template
-
-Recommended next improvements:
-
-- add API versioning (`/api/v1`)
-- add auth routes and middleware
-- add tests for config loading and route handlers
-- add CI lint/test pipeline
-- add structured error handling and validation
+- Keep HTTP routing and middleware registration inside `internal/app`
+- Place business logic in `internal/service` and persistence concerns in `internal/repository`
+- Use `internal/logger` for structured logging and request context propagation
 
 ## License
 

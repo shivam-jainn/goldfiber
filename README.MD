@@ -1,5 +1,7 @@
 # GoldFiber
 
+![Goldfiber banner](./Goldfiber.png)
+
 A starter template for a Go web service using Fiber, PostgreSQL, and Docker Compose.
 
 ## Overview
